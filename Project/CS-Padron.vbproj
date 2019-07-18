@@ -162,9 +162,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lobos.mdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="StackOfFinancialPapers48.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />

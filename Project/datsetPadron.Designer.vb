@@ -572,10 +572,10 @@ Partial Public Class datsetPadron
             Me.Constraints.Add(New Global.System.Data.UniqueConstraint("Constraint1", New Global.System.Data.DataColumn() {Me.columnIDPersona}, true))
             Me.columnIDPersona.AllowDBNull = false
             Me.columnIDPersona.Unique = true
-            Me.columnApellido.MaxLength = 25
-            Me.columnNombre.MaxLength = 30
+            Me.columnApellido.MaxLength = 31
+            Me.columnNombre.MaxLength = 31
             Me.columnDomicilio.MaxLength = 32
-            Me.columnDocumentoTipo.MaxLength = 6
+            Me.columnDocumentoTipo.MaxLength = 7
             Me.columnCircuito.MaxLength = 4
             Me.columnSexo.MaxLength = 1
         End Sub
