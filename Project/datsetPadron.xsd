@@ -65,7 +65,7 @@ FROM            Mesa</CommandText>
   <xs:element name="datsetPadron" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="datsetPadron" msprop:Generator_UserDSName="datsetPadron">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="Padron" msprop:Generator_TableClassName="PadronDataTable" msprop:Generator_TableVarName="tablePadron" msprop:Generator_RowChangedName="PadronRowChanged" msprop:Generator_TablePropName="Padron" msprop:Generator_RowDeletingName="PadronRowDeleting" msprop:Generator_RowChangingName="PadronRowChanging" msprop:Generator_RowEvHandlerName="PadronRowChangeEventHandler" msprop:Generator_RowDeletedName="PadronRowDeleted" msprop:Generator_RowClassName="PadronRow" msprop:Generator_UserTableName="Padron" msprop:Generator_RowEvArgName="PadronRowChangeEvent">
+        <xs:element name="Padron" msprop:Generator_TableClassName="PadronDataTable" msprop:Generator_TableVarName="tablePadron" msprop:Generator_TablePropName="Padron" msprop:Generator_RowDeletingName="PadronRowDeleting" msprop:Generator_RowChangingName="PadronRowChanging" msprop:Generator_RowEvHandlerName="PadronRowChangeEventHandler" msprop:Generator_RowDeletedName="PadronRowDeleted" msprop:Generator_UserTableName="Padron" msprop:Generator_RowChangedName="PadronRowChanged" msprop:Generator_RowEvArgName="PadronRowChangeEvent" msprop:Generator_RowClassName="PadronRow">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="IDPersona" msprop:Generator_ColumnVarNameInTable="columnIDPersona" msprop:Generator_ColumnPropNameInRow="IDPersona" msprop:Generator_ColumnPropNameInTable="IDPersonaColumn" msprop:Generator_UserColumnName="IDPersona" type="xs:int" />
@@ -88,7 +88,7 @@ FROM            Mesa</CommandText>
               <xs:element name="Domicilio" msprop:Generator_ColumnVarNameInTable="columnDomicilio" msprop:Generator_ColumnPropNameInRow="Domicilio" msprop:Generator_ColumnPropNameInTable="DomicilioColumn" msprop:Generator_UserColumnName="Domicilio" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
-                    <xs:maxLength value="32" />
+                    <xs:maxLength value="84" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
@@ -118,7 +118,7 @@ FROM            Mesa</CommandText>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="Mesa" msprop:Generator_TableClassName="MesaDataTable" msprop:Generator_TableVarName="tableMesa" msprop:Generator_TablePropName="Mesa" msprop:Generator_RowDeletingName="MesaRowDeleting" msprop:Generator_RowChangingName="MesaRowChanging" msprop:Generator_RowEvHandlerName="MesaRowChangeEventHandler" msprop:Generator_RowDeletedName="MesaRowDeleted" msprop:Generator_UserTableName="Mesa" msprop:Generator_RowChangedName="MesaRowChanged" msprop:Generator_RowEvArgName="MesaRowChangeEvent" msprop:Generator_RowClassName="MesaRow">
+        <xs:element name="Mesa" msprop:Generator_TableClassName="MesaDataTable" msprop:Generator_TableVarName="tableMesa" msprop:Generator_RowChangedName="MesaRowChanged" msprop:Generator_TablePropName="Mesa" msprop:Generator_RowDeletingName="MesaRowDeleting" msprop:Generator_RowChangingName="MesaRowChanging" msprop:Generator_RowEvHandlerName="MesaRowChangeEventHandler" msprop:Generator_RowDeletedName="MesaRowDeleted" msprop:Generator_RowClassName="MesaRow" msprop:Generator_UserTableName="Mesa" msprop:Generator_RowEvArgName="MesaRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="Circuito" msprop:Generator_ColumnVarNameInTable="columnCircuito" msprop:Generator_ColumnPropNameInRow="Circuito" msprop:Generator_ColumnPropNameInTable="CircuitoColumn" msprop:Generator_UserColumnName="Circuito">

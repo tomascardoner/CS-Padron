@@ -8,12 +8,12 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("CS-Padrón 2019")>
+<Assembly: AssemblyTitle("CS-Padrón 2021")>
 <Assembly: AssemblyDescription("Padrón de electores")> 
 <Assembly: AssemblyCompany("Cardoner Sistemas")> 
 <Assembly: AssemblyProduct("CS-Padrón")>
-<Assembly: AssemblyCopyright("Copyright © 2007-2019 Cardoner Sistemas")>
-<Assembly: AssemblyTrademark("® CS-Padrón 2019")>
+<Assembly: AssemblyCopyright("Copyright © 2007-2021 Cardoner Sistemas")>
+<Assembly: AssemblyTrademark("® CS-Padrón 2021")>
 
 <Assembly: ComVisible(False)>
 

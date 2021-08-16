@@ -76,8 +76,8 @@
     <Import Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C:\Data\Cardoner Sistemas\Development\framework-vbnet\CS_Constants.vb">
-      <Link>CS_Constants.vb</Link>
+    <Compile Include="..\..\framework-vbnet\Constants.vb">
+      <Link>Constants.vb</Link>
     </Compile>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="C:\Data\Cardoner Sistemas\Development\framework-vbnet\CS_ValueTranslation.vb">
