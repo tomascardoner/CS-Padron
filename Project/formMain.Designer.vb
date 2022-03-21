@@ -135,7 +135,7 @@ Partial Class formMain
         DocumentoNumeroLabel.Location = New System.Drawing.Point(15, 16)
         DocumentoNumeroLabel.Name = "DocumentoNumeroLabel"
         DocumentoNumeroLabel.Size = New System.Drawing.Size(88, 18)
-        DocumentoNumeroLabel.TabIndex = 13
+        DocumentoNumeroLabel.TabIndex = 0
         DocumentoNumeroLabel.Text = "Documento:"
         '
         'ClaseLabel
@@ -145,7 +145,7 @@ Partial Class formMain
         ClaseLabel.Location = New System.Drawing.Point(243, 112)
         ClaseLabel.Name = "ClaseLabel"
         ClaseLabel.Size = New System.Drawing.Size(47, 18)
-        ClaseLabel.TabIndex = 16
+        ClaseLabel.TabIndex = 9
         ClaseLabel.Text = "Clase:"
         '
         'NombreLabel
@@ -155,7 +155,7 @@ Partial Class formMain
         NombreLabel.Location = New System.Drawing.Point(14, 80)
         NombreLabel.Name = "NombreLabel"
         NombreLabel.Size = New System.Drawing.Size(65, 18)
-        NombreLabel.TabIndex = 20
+        NombreLabel.TabIndex = 5
         NombreLabel.Text = "Nombre:"
         '
         'ProfesionLabel
@@ -165,7 +165,7 @@ Partial Class formMain
         ProfesionLabel.Location = New System.Drawing.Point(14, 143)
         ProfesionLabel.Name = "ProfesionLabel"
         ProfesionLabel.Size = New System.Drawing.Size(72, 18)
-        ProfesionLabel.TabIndex = 22
+        ProfesionLabel.TabIndex = 11
         ProfesionLabel.Text = "Profesión:"
         '
         'DomicilioLabel
@@ -175,7 +175,7 @@ Partial Class formMain
         DomicilioLabel.Location = New System.Drawing.Point(14, 175)
         DomicilioLabel.Name = "DomicilioLabel"
         DomicilioLabel.Size = New System.Drawing.Size(67, 18)
-        DomicilioLabel.TabIndex = 24
+        DomicilioLabel.TabIndex = 13
         DomicilioLabel.Text = "Domicilio:"
         '
         'CircuitoLabel
@@ -185,7 +185,7 @@ Partial Class formMain
         CircuitoLabel.Location = New System.Drawing.Point(14, 207)
         CircuitoLabel.Name = "CircuitoLabel"
         CircuitoLabel.Size = New System.Drawing.Size(59, 18)
-        CircuitoLabel.TabIndex = 28
+        CircuitoLabel.TabIndex = 15
         CircuitoLabel.Text = "Circuito:"
         '
         'SexoLabel
@@ -195,7 +195,7 @@ Partial Class formMain
         SexoLabel.Location = New System.Drawing.Point(14, 112)
         SexoLabel.Name = "SexoLabel"
         SexoLabel.Size = New System.Drawing.Size(45, 18)
-        SexoLabel.TabIndex = 30
+        SexoLabel.TabIndex = 7
         SexoLabel.Text = "Sexo:"
         '
         'MesaLabel
@@ -205,7 +205,7 @@ Partial Class formMain
         MesaLabel.Location = New System.Drawing.Point(214, 207)
         MesaLabel.Name = "MesaLabel"
         MesaLabel.Size = New System.Drawing.Size(48, 18)
-        MesaLabel.TabIndex = 47
+        MesaLabel.TabIndex = 17
         MesaLabel.Text = "Mesa:"
         '
         'OrdenLabel
@@ -215,7 +215,7 @@ Partial Class formMain
         OrdenLabel.Location = New System.Drawing.Point(346, 207)
         OrdenLabel.Name = "OrdenLabel"
         OrdenLabel.Size = New System.Drawing.Size(53, 18)
-        OrdenLabel.TabIndex = 49
+        OrdenLabel.TabIndex = 19
         OrdenLabel.Text = "Orden:"
         '
         'MesaNombreLabel
@@ -225,7 +225,7 @@ Partial Class formMain
         MesaNombreLabel.Location = New System.Drawing.Point(16, 245)
         MesaNombreLabel.Name = "MesaNombreLabel"
         MesaNombreLabel.Size = New System.Drawing.Size(86, 18)
-        MesaNombreLabel.TabIndex = 53
+        MesaNombreLabel.TabIndex = 22
         MesaNombreLabel.Text = "Establecim.:"
         '
         'MesaDireccionLabel
@@ -235,7 +235,7 @@ Partial Class formMain
         MesaDireccionLabel.Location = New System.Drawing.Point(16, 277)
         MesaDireccionLabel.Name = "MesaDireccionLabel"
         MesaDireccionLabel.Size = New System.Drawing.Size(70, 18)
-        MesaDireccionLabel.TabIndex = 54
+        MesaDireccionLabel.TabIndex = 24
         MesaDireccionLabel.Text = "Dirección:"
         '
         'MesaLocalidadLabel
@@ -245,7 +245,7 @@ Partial Class formMain
         MesaLocalidadLabel.Location = New System.Drawing.Point(18, 309)
         MesaLocalidadLabel.Name = "MesaLocalidadLabel"
         MesaLocalidadLabel.Size = New System.Drawing.Size(71, 18)
-        MesaLocalidadLabel.TabIndex = 57
+        MesaLocalidadLabel.TabIndex = 26
         MesaLocalidadLabel.Text = "Localidad:"
         '
         'ApellidoLabel
@@ -255,7 +255,7 @@ Partial Class formMain
         ApellidoLabel.Location = New System.Drawing.Point(15, 48)
         ApellidoLabel.Name = "ApellidoLabel"
         ApellidoLabel.Size = New System.Drawing.Size(60, 18)
-        ApellidoLabel.TabIndex = 58
+        ApellidoLabel.TabIndex = 3
         ApellidoLabel.Text = "Apellido:"
         '
         'pnlDetail
@@ -295,7 +295,7 @@ Partial Class formMain
         Me.pnlDetail.Location = New System.Drawing.Point(12, 12)
         Me.pnlDetail.Name = "pnlDetail"
         Me.pnlDetail.Size = New System.Drawing.Size(530, 387)
-        Me.pnlDetail.TabIndex = 12
+        Me.pnlDetail.TabIndex = 0
         '
         'ApellidoTextBox
         '
@@ -307,7 +307,7 @@ Partial Class formMain
         Me.ApellidoTextBox.Name = "ApellidoTextBox"
         Me.ApellidoTextBox.ReadOnly = True
         Me.ApellidoTextBox.Size = New System.Drawing.Size(385, 26)
-        Me.ApellidoTextBox.TabIndex = 59
+        Me.ApellidoTextBox.TabIndex = 4
         Me.ApellidoTextBox.TabStop = False
         '
         'bngsrcDetail
@@ -331,7 +331,7 @@ Partial Class formMain
         Me.MesaLocalidadTextBox.Name = "MesaLocalidadTextBox"
         Me.MesaLocalidadTextBox.ReadOnly = True
         Me.MesaLocalidadTextBox.Size = New System.Drawing.Size(384, 26)
-        Me.MesaLocalidadTextBox.TabIndex = 56
+        Me.MesaLocalidadTextBox.TabIndex = 27
         Me.MesaLocalidadTextBox.TabStop = False
         '
         'bngsrcMesa
@@ -350,7 +350,7 @@ Partial Class formMain
         Me.MesaDireccionTextBox.Name = "MesaDireccionTextBox"
         Me.MesaDireccionTextBox.ReadOnly = True
         Me.MesaDireccionTextBox.Size = New System.Drawing.Size(384, 26)
-        Me.MesaDireccionTextBox.TabIndex = 55
+        Me.MesaDireccionTextBox.TabIndex = 25
         Me.MesaDireccionTextBox.TabStop = False
         '
         'MesaNombreTextBox
@@ -363,7 +363,7 @@ Partial Class formMain
         Me.MesaNombreTextBox.Name = "MesaNombreTextBox"
         Me.MesaNombreTextBox.ReadOnly = True
         Me.MesaNombreTextBox.Size = New System.Drawing.Size(384, 26)
-        Me.MesaNombreTextBox.TabIndex = 52
+        Me.MesaNombreTextBox.TabIndex = 23
         Me.MesaNombreTextBox.TabStop = False
         '
         'lblDivisionLine
@@ -372,7 +372,7 @@ Partial Class formMain
         Me.lblDivisionLine.Location = New System.Drawing.Point(16, 235)
         Me.lblDivisionLine.Name = "lblDivisionLine"
         Me.lblDivisionLine.Size = New System.Drawing.Size(494, 2)
-        Me.lblDivisionLine.TabIndex = 51
+        Me.lblDivisionLine.TabIndex = 21
         '
         'OrdenTextBox
         '
@@ -382,7 +382,7 @@ Partial Class formMain
         Me.OrdenTextBox.Name = "OrdenTextBox"
         Me.OrdenTextBox.ReadOnly = True
         Me.OrdenTextBox.Size = New System.Drawing.Size(46, 26)
-        Me.OrdenTextBox.TabIndex = 50
+        Me.OrdenTextBox.TabIndex = 20
         Me.OrdenTextBox.TabStop = False
         '
         'MesaTextBox
@@ -393,7 +393,7 @@ Partial Class formMain
         Me.MesaTextBox.Name = "MesaTextBox"
         Me.MesaTextBox.ReadOnly = True
         Me.MesaTextBox.Size = New System.Drawing.Size(46, 26)
-        Me.MesaTextBox.TabIndex = 48
+        Me.MesaTextBox.TabIndex = 18
         Me.MesaTextBox.TabStop = False
         '
         'btnDetailBack
@@ -403,7 +403,7 @@ Partial Class formMain
         Me.btnDetailBack.Location = New System.Drawing.Point(306, 344)
         Me.btnDetailBack.Name = "btnDetailBack"
         Me.btnDetailBack.Size = New System.Drawing.Size(109, 43)
-        Me.btnDetailBack.TabIndex = 46
+        Me.btnDetailBack.TabIndex = 28
         Me.btnDetailBack.Text = "Volver"
         Me.btnDetailBack.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnDetailBack.UseVisualStyleBackColor = True
@@ -416,7 +416,7 @@ Partial Class formMain
         Me.btnDetailNewSearch.Location = New System.Drawing.Point(421, 344)
         Me.btnDetailNewSearch.Name = "btnDetailNewSearch"
         Me.btnDetailNewSearch.Size = New System.Drawing.Size(109, 43)
-        Me.btnDetailNewSearch.TabIndex = 45
+        Me.btnDetailNewSearch.TabIndex = 29
         Me.btnDetailNewSearch.Text = "Nueva"
         Me.btnDetailNewSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnDetailNewSearch.UseVisualStyleBackColor = True
@@ -439,7 +439,7 @@ Partial Class formMain
         Me.bngnavDetail.Name = "bngnavDetail"
         Me.bngnavDetail.PositionItem = Me.BindingNavigatorPositionItem
         Me.bngnavDetail.Size = New System.Drawing.Size(232, 25)
-        Me.bngnavDetail.TabIndex = 32
+        Me.bngnavDetail.TabIndex = 30
         '
         'BindingNavigatorCountItem
         '
@@ -532,7 +532,7 @@ Partial Class formMain
         Me.DocumentoNumeroTextBox.Name = "DocumentoNumeroTextBox"
         Me.DocumentoNumeroTextBox.ReadOnly = True
         Me.DocumentoNumeroTextBox.Size = New System.Drawing.Size(97, 26)
-        Me.DocumentoNumeroTextBox.TabIndex = 15
+        Me.DocumentoNumeroTextBox.TabIndex = 2
         Me.DocumentoNumeroTextBox.TabStop = False
         '
         'ClaseTextBox
@@ -543,7 +543,7 @@ Partial Class formMain
         Me.ClaseTextBox.Name = "ClaseTextBox"
         Me.ClaseTextBox.ReadOnly = True
         Me.ClaseTextBox.Size = New System.Drawing.Size(57, 26)
-        Me.ClaseTextBox.TabIndex = 17
+        Me.ClaseTextBox.TabIndex = 10
         Me.ClaseTextBox.TabStop = False
         '
         'NombreTextBox
@@ -556,7 +556,7 @@ Partial Class formMain
         Me.NombreTextBox.Name = "NombreTextBox"
         Me.NombreTextBox.ReadOnly = True
         Me.NombreTextBox.Size = New System.Drawing.Size(385, 26)
-        Me.NombreTextBox.TabIndex = 21
+        Me.NombreTextBox.TabIndex = 6
         Me.NombreTextBox.TabStop = False
         '
         'ProfesionTextBox
@@ -566,7 +566,7 @@ Partial Class formMain
         Me.ProfesionTextBox.Name = "ProfesionTextBox"
         Me.ProfesionTextBox.ReadOnly = True
         Me.ProfesionTextBox.Size = New System.Drawing.Size(104, 26)
-        Me.ProfesionTextBox.TabIndex = 23
+        Me.ProfesionTextBox.TabIndex = 12
         Me.ProfesionTextBox.TabStop = False
         '
         'DomicilioTextBox
@@ -579,7 +579,7 @@ Partial Class formMain
         Me.DomicilioTextBox.Name = "DomicilioTextBox"
         Me.DomicilioTextBox.ReadOnly = True
         Me.DomicilioTextBox.Size = New System.Drawing.Size(385, 26)
-        Me.DomicilioTextBox.TabIndex = 25
+        Me.DomicilioTextBox.TabIndex = 14
         Me.DomicilioTextBox.TabStop = False
         '
         'DocumentoTipoTextBox
@@ -590,7 +590,7 @@ Partial Class formMain
         Me.DocumentoTipoTextBox.Name = "DocumentoTipoTextBox"
         Me.DocumentoTipoTextBox.ReadOnly = True
         Me.DocumentoTipoTextBox.Size = New System.Drawing.Size(73, 26)
-        Me.DocumentoTipoTextBox.TabIndex = 14
+        Me.DocumentoTipoTextBox.TabIndex = 1
         Me.DocumentoTipoTextBox.TabStop = False
         '
         'CircuitoTextBox
@@ -601,7 +601,7 @@ Partial Class formMain
         Me.CircuitoTextBox.Name = "CircuitoTextBox"
         Me.CircuitoTextBox.ReadOnly = True
         Me.CircuitoTextBox.Size = New System.Drawing.Size(63, 26)
-        Me.CircuitoTextBox.TabIndex = 29
+        Me.CircuitoTextBox.TabIndex = 16
         Me.CircuitoTextBox.TabStop = False
         '
         'SexoTextBox
@@ -612,7 +612,7 @@ Partial Class formMain
         Me.SexoTextBox.Name = "SexoTextBox"
         Me.SexoTextBox.ReadOnly = True
         Me.SexoTextBox.Size = New System.Drawing.Size(21, 26)
-        Me.SexoTextBox.TabIndex = 31
+        Me.SexoTextBox.TabIndex = 8
         Me.SexoTextBox.TabStop = False
         '
         'pnlSearch
@@ -642,7 +642,7 @@ Partial Class formMain
         Me.cboboxSearchSexo.Location = New System.Drawing.Point(88, 253)
         Me.cboboxSearchSexo.Name = "cboboxSearchSexo"
         Me.cboboxSearchSexo.Size = New System.Drawing.Size(143, 26)
-        Me.cboboxSearchSexo.TabIndex = 13
+        Me.cboboxSearchSexo.TabIndex = 9
         '
         'lblSearchSexo
         '
@@ -650,7 +650,7 @@ Partial Class formMain
         Me.lblSearchSexo.Location = New System.Drawing.Point(22, 256)
         Me.lblSearchSexo.Name = "lblSearchSexo"
         Me.lblSearchSexo.Size = New System.Drawing.Size(45, 18)
-        Me.lblSearchSexo.TabIndex = 12
+        Me.lblSearchSexo.TabIndex = 8
         Me.lblSearchSexo.Text = "Sexo:"
         '
         'cboboxSearchNombre
@@ -661,7 +661,7 @@ Partial Class formMain
         Me.cboboxSearchNombre.Location = New System.Drawing.Point(88, 178)
         Me.cboboxSearchNombre.Name = "cboboxSearchNombre"
         Me.cboboxSearchNombre.Size = New System.Drawing.Size(235, 26)
-        Me.cboboxSearchNombre.TabIndex = 9
+        Me.cboboxSearchNombre.TabIndex = 6
         '
         'btnSearchSearch
         '
@@ -670,7 +670,7 @@ Partial Class formMain
         Me.btnSearchSearch.Location = New System.Drawing.Point(421, 344)
         Me.btnSearchSearch.Name = "btnSearchSearch"
         Me.btnSearchSearch.Size = New System.Drawing.Size(109, 43)
-        Me.btnSearchSearch.TabIndex = 11
+        Me.btnSearchSearch.TabIndex = 10
         Me.btnSearchSearch.Text = "Buscar"
         Me.btnSearchSearch.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnSearchSearch.UseVisualStyleBackColor = True
@@ -685,7 +685,7 @@ Partial Class formMain
         Me.txtboxSearchNombre.MaxLength = 29
         Me.txtboxSearchNombre.Name = "txtboxSearchNombre"
         Me.txtboxSearchNombre.Size = New System.Drawing.Size(423, 26)
-        Me.txtboxSearchNombre.TabIndex = 10
+        Me.txtboxSearchNombre.TabIndex = 7
         '
         'lblSearchNombre
         '
@@ -693,7 +693,7 @@ Partial Class formMain
         Me.lblSearchNombre.Location = New System.Drawing.Point(22, 181)
         Me.lblSearchNombre.Name = "lblSearchNombre"
         Me.lblSearchNombre.Size = New System.Drawing.Size(65, 18)
-        Me.lblSearchNombre.TabIndex = 8
+        Me.lblSearchNombre.TabIndex = 5
         Me.lblSearchNombre.Text = "Nombre:"
         '
         'txtboxSearchDocumentoNumero
@@ -744,7 +744,7 @@ Partial Class formMain
         Me.lblSearchTitle.Location = New System.Drawing.Point(0, 0)
         Me.lblSearchTitle.Name = "lblSearchTitle"
         Me.lblSearchTitle.Size = New System.Drawing.Size(530, 29)
-        Me.lblSearchTitle.TabIndex = 1
+        Me.lblSearchTitle.TabIndex = 0
         Me.lblSearchTitle.Text = "Opciones de Búsqueda"
         Me.lblSearchTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
@@ -754,7 +754,7 @@ Partial Class formMain
         Me.lblCopyright.Location = New System.Drawing.Point(12, 402)
         Me.lblCopyright.Name = "lblCopyright"
         Me.lblCopyright.Size = New System.Drawing.Size(530, 19)
-        Me.lblCopyright.TabIndex = 12
+        Me.lblCopyright.TabIndex = 1
         Me.lblCopyright.Text = "Copyright"
         Me.lblCopyright.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
@@ -769,7 +769,7 @@ Partial Class formMain
         Me.pnlGrid.Location = New System.Drawing.Point(12, 12)
         Me.pnlGrid.Name = "pnlGrid"
         Me.pnlGrid.Size = New System.Drawing.Size(530, 387)
-        Me.pnlGrid.TabIndex = 13
+        Me.pnlGrid.TabIndex = 0
         Me.pnlGrid.Visible = False
         '
         'lblResultCount
@@ -778,7 +778,7 @@ Partial Class formMain
         Me.lblResultCount.Location = New System.Drawing.Point(18, 344)
         Me.lblResultCount.Name = "lblResultCount"
         Me.lblResultCount.Size = New System.Drawing.Size(229, 21)
-        Me.lblResultCount.TabIndex = 49
+        Me.lblResultCount.TabIndex = 2
         Me.lblResultCount.Text = "{0} coincidencias."
         '
         'btnResultDetail
@@ -788,7 +788,7 @@ Partial Class formMain
         Me.btnResultDetail.Location = New System.Drawing.Point(421, 344)
         Me.btnResultDetail.Name = "btnResultDetail"
         Me.btnResultDetail.Size = New System.Drawing.Size(109, 43)
-        Me.btnResultDetail.TabIndex = 48
+        Me.btnResultDetail.TabIndex = 4
         Me.btnResultDetail.Text = "Detalles"
         Me.btnResultDetail.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnResultDetail.UseVisualStyleBackColor = True
@@ -800,7 +800,7 @@ Partial Class formMain
         Me.btnResultBack.Location = New System.Drawing.Point(308, 344)
         Me.btnResultBack.Name = "btnResultBack"
         Me.btnResultBack.Size = New System.Drawing.Size(109, 43)
-        Me.btnResultBack.TabIndex = 47
+        Me.btnResultBack.TabIndex = 3
         Me.btnResultBack.Text = "Volver"
         Me.btnResultBack.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnResultBack.UseVisualStyleBackColor = True
@@ -814,7 +814,7 @@ Partial Class formMain
         Me.lblResultTitle.Location = New System.Drawing.Point(0, 0)
         Me.lblResultTitle.Name = "lblResultTitle"
         Me.lblResultTitle.Size = New System.Drawing.Size(530, 29)
-        Me.lblResultTitle.TabIndex = 2
+        Me.lblResultTitle.TabIndex = 0
         Me.lblResultTitle.Text = "Resultados de la Búsqueda"
         Me.lblResultTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
@@ -838,7 +838,7 @@ Partial Class formMain
         Me.datgrdResult.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.datgrdResult.ShowEditingIcon = False
         Me.datgrdResult.Size = New System.Drawing.Size(494, 299)
-        Me.datgrdResult.TabIndex = 0
+        Me.datgrdResult.TabIndex = 1
         '
         'IDPersona
         '
