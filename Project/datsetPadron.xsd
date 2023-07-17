@@ -95,7 +95,7 @@ FROM            Mesa</CommandText>
               <xs:element name="DocumentoTipo" msprop:Generator_ColumnVarNameInTable="columnDocumentoTipo" msprop:Generator_ColumnPropNameInRow="DocumentoTipo" msprop:Generator_ColumnPropNameInTable="DocumentoTipoColumn" msprop:Generator_UserColumnName="DocumentoTipo" minOccurs="0">
                 <xs:simpleType>
                   <xs:restriction base="xs:string">
-                    <xs:maxLength value="7" />
+                    <xs:maxLength value="11" />
                   </xs:restriction>
                 </xs:simpleType>
               </xs:element>
