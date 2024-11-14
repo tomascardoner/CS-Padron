@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CS-Padrón importador", "CS-Padrón importador.csproj", "{DE6B65D9-0FB2-47F7-9421-AE5764A5F495}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DE6B65D9-0FB2-47F7-9421-AE5764A5F495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE6B65D9-0FB2-47F7-9421-AE5764A5F495}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE6B65D9-0FB2-47F7-9421-AE5764A5F495}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE6B65D9-0FB2-47F7-9421-AE5764A5F495}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C9ED29FC-28CB-4989-BED8-31C4B101D98E}
+	EndGlobalSection
+EndGlobal
