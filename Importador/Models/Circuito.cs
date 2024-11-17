@@ -7,11 +7,17 @@ namespace CS_Padron_Importador.Models;
 
 public partial class Circuito
 {
+    public short IdCircuito { get; set; }
+
     public byte IdDistrito { get; set; }
 
     public byte IdSeccion { get; set; }
 
-    public byte IdCircuito { get; set; }
+    public short CodigoNumero { get; set; }
+
+    public string CodigoLetra { get; set; }
+
+    public string Codigo { get; set; }
 
     public string Nombre { get; set; }
 

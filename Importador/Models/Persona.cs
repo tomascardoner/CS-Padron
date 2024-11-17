@@ -29,13 +29,9 @@ public partial class Persona
 
     public byte IdNacionalidadTipo { get; set; }
 
-    public byte IdDistrito { get; set; }
+    public short IdCircuito { get; set; }
 
-    public byte IdSeccion { get; set; }
-
-    public byte IdCircuito { get; set; }
-
-    public virtual Circuito Circuito { get; set; }
+    public virtual Circuito IdCircuitoNavigation { get; set; }
 
     public virtual DocumentoTipo IdDocumentoTipoNavigation { get; set; }
 

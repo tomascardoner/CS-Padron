@@ -29,10 +29,21 @@ public partial class CSPadronContext : DbContext
     {
         modelBuilder.Entity<Circuito>(entity =>
         {
-            entity.HasKey(e => new { e.IdDistrito, e.IdSeccion, e.IdCircuito });
+            entity.HasKey(e => e.IdCircuito);
+
+            entity.HasIndex(e => e.Codigo, "AK_Circuito_Codigo").IsUnique();
 
             entity.HasIndex(e => new { e.IdDistrito, e.IdSeccion, e.Nombre }, "AK_Circuito_Nombre").IsUnique();
 
+            entity.Property(e => e.IdCircuito).ValueGeneratedNever();
+            entity.Property(e => e.Codigo)
+                .HasMaxLength(6)
+                .IsUnicode(false)
+                .HasComputedColumnSql("(CONVERT([varchar](5),[CodigoNumero])+isnull([CodigoLetra],''))", false);
+            entity.Property(e => e.CodigoLetra)
+                .HasMaxLength(1)
+                .IsUnicode(false)
+                .IsFixedLength();
             entity.Property(e => e.Nombre)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -110,6 +121,11 @@ public partial class CSPadronContext : DbContext
                 .HasMaxLength(100)
                 .IsUnicode(false);
 
+            entity.HasOne(d => d.IdCircuitoNavigation).WithMany(p => p.Persona)
+                .HasForeignKey(d => d.IdCircuito)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Persona_Circuito");
+
             entity.HasOne(d => d.IdDocumentoTipoNavigation).WithMany(p => p.Persona)
                 .HasForeignKey(d => d.IdDocumentoTipo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
@@ -119,11 +135,6 @@ public partial class CSPadronContext : DbContext
                 .HasForeignKey(d => d.IdNacionalidadTipo)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Persona_NacionalidadTipo");
-
-            entity.HasOne(d => d.Circuito).WithMany(p => p.Persona)
-                .HasForeignKey(d => new { d.IdDistrito, d.IdSeccion, d.IdCircuito })
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Persona_Circuito");
         });
 
         modelBuilder.Entity<Seccion>(entity =>
