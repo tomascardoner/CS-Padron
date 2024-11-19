@@ -1,5 +1,8 @@
 using CardonerSistemas.Framework.Base;
+using CS_Padron_Importador.Models;
 using ExcelDataReader;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,6 +11,9 @@ namespace CS_Padron_Importador
 {
     public partial class FormMain : Form
     {
+
+        #region Declarations
+
         private const byte IdDocumentoTipoNoEspecificado = 1;
 
         private const byte ColumnaSeccion = 1;
@@ -28,7 +34,6 @@ namespace CS_Padron_Importador
         const string CodigoSeparador = " - ";
 
         private string _folder = string.Empty;
-        private Models.CSPadronContext _context;
         private readonly byte _idDistrito = 1;
         private byte _idSeccion;
         private short _idCircuito;
@@ -37,6 +42,8 @@ namespace CS_Padron_Importador
         private IEnumerable<Models.DocumentoTipo> _documentoTipos;
         private IEnumerable<Models.NacionalidadTipo> _nacionalidadTipos;
         private int _numeroFilasImportadas = 0;
+
+        #endregion Declarations
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider adding the 'required' modifier or declaring as nullable.
         public FormMain()
@@ -47,6 +54,8 @@ namespace CS_Padron_Importador
             ComboBoxCantidadLote.Items.AddRange([1, 10, 50, 100, 500, 1000, 5000]);
             ComboBoxCantidadLote.SelectedIndex = 5;
         }
+
+        #region Files to import
 
         private void ButtonExaminar_Click(object sender, EventArgs e)
         {
@@ -64,24 +73,26 @@ namespace CS_Padron_Importador
 
         private void ButtonBuscar_Click(object sender, EventArgs e)
         {
-            if (TextBoxCarpeta.Text.Trim() != string.Empty)
+            if (TextBoxCarpeta.Text.Trim() == string.Empty)
             {
-                Cursor = Cursors.WaitCursor;
-                LabelEstado.Text = "Obteniendo lista de archivos desde la carpeta....";
-                Application.DoEvents();
-                _folder = TextBoxCarpeta.Text.Trim();
-                try
-                {
-                    string[] files = [.. Directory.EnumerateFiles(_folder, "*.xlsx", SearchOption.TopDirectoryOnly).Select(Path.GetFileName).OrderBy(Path.GetFileName)];
-                    CheckedListBoxArchivos.Items.AddRange(files);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Error al obtener la lista de archivos de la carpeta.\n\nError: {ex.Message}", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                Cursor = Cursors.Default;
-                LabelEstado.Text = string.Empty;
+                return;
             }
+
+            Cursor = Cursors.WaitCursor;
+            LabelEstado.Text = "Obteniendo lista de archivos desde la carpeta....";
+            Application.DoEvents();
+            _folder = TextBoxCarpeta.Text.Trim();
+            try
+            {
+                string[] files = [.. Directory.EnumerateFiles(_folder, "*.xlsx", SearchOption.TopDirectoryOnly).Select(Path.GetFileName).OrderBy(Path.GetFileName)];
+                CheckedListBoxArchivos.Items.AddRange(files);
+            }
+            catch (Exception ex)
+            {
+                Error.ProcessException(ex, $"Error al obtener la lista de archivos de la carpeta.\n\nError: {ex.Message}");
+            }
+            LabelEstado.Text = string.Empty;
+            Cursor = Cursors.Default;
         }
 
         private void Seleccionar(bool value)
@@ -102,280 +113,217 @@ namespace CS_Padron_Importador
             Seleccionar(false);
         }
 
+        #endregion Files to import
+
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning disable CS8604 // Possible null reference argument.
 
         private void ButtonIniciar_Click(object sender, EventArgs e)
         {
-            if (CheckedListBoxArchivos.CheckedItems.Count > 0)
+            if (CheckedListBoxArchivos.CheckedItems.Count == 0)
             {
-                HabilitarControlesImportacion(false);
-                if (_context is null)
+                return;
+            }
+
+            HabilitarControlesImportacion(false);
+
+            _numeroFilasImportadas = 0;
+            Stopwatch stopWatch = new();
+            stopWatch.Start();
+            for (int i = 0; i < CheckedListBoxArchivos.CheckedItems.Count; i++)
+            {
+                if (!ImportarArchivo(CheckedListBoxArchivos.CheckedItems[i].ToString()))
                 {
-                    _context = new();
-                    _documentoTipos = _context.DocumentoTipo;
-                    _nacionalidadTipos = _context.NacionalidadTipo;
-                    if (_context.Persona.Any())
-                    {
-                        _idPersona = _context.Persona.Max(p => p.IdPersona) + 1;
-                    }
-                    else
-                    {
-                        _idPersona = 1;
-                    }
+                    stopWatch.Stop();
+                    HabilitarControlesImportacion(true);
+                    return;
                 }
-                _numeroFilasImportadas = 0;
-                Stopwatch stopWatch = new();
-                stopWatch.Start();
-                for (int i = 0; i < CheckedListBoxArchivos.CheckedItems.Count; i++)
-                {
-                    if (!ImportarArchivo(CheckedListBoxArchivos.CheckedItems[i].ToString()))
-                    {
-                        stopWatch.Stop();
-                        HabilitarControlesImportacion(true);
-                        return;
-                    }
-                }
-                stopWatch.Stop();
-                HabilitarControlesImportacion(true);
-                if (_numeroFilasImportadas == 0)
-                {
-                    MessageBox.Show("No se han importado datos.", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                else
-                {
-                    TimeSpan timeSpan = stopWatch.Elapsed;
-                    MessageBox.Show($"Se han importado {_numeroFilasImportadas:N0} personas.\n\nTiempo transcurrido: {timeSpan.Minutes} minutos y {timeSpan.Seconds} segundos.", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+            }
+            stopWatch.Stop();
+            HabilitarControlesImportacion(true);
+            if (_numeroFilasImportadas == 0)
+            {
+                MessageBox.Show("No se han importado datos.", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                TimeSpan timeSpan = stopWatch.Elapsed;
+                MessageBox.Show($"Se han importado {_numeroFilasImportadas:N0} personas.\n\nTiempo transcurrido: {timeSpan.Minutes} minutos y {timeSpan.Seconds} segundos.", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 
         private bool ImportarArchivo(string archivo)
         {
-            string errorMessage = string.Empty;
             Cursor = Cursors.WaitCursor;
-            LabelEstado.Text = $"Abriendo el archivo {archivo}....";
+            if (!AbrirYLeerArchivo(archivo, out DataSet? dataSet))
+            {
+                Cursor = Cursors.Default;
+                return false;
+            }
+
+            // Inicializar información de progreso
+            ProgressBarArchivo.Value = 0;
+            ProgressBarArchivo.Maximum = dataSet.Tables[0].Rows.Count;
+            ProgressBarArchivo.Visible = true;
+            int numeroFila = 0;
+            LabelEstado.Text = $"Leyendo {ProgressBarArchivo.Maximum:N0} filas desde el archivo {archivo}...";
+            Application.DoEvents();
+
+            // Abrir nueva conexión a la base de datos
+            using Models.CSPadronContext context = new();
+            if (!CargarTablas(context))
+            {
+                Cursor = Cursors.Default;
+                return false;
+            }
+            IDbContextTransaction transaction = context.Database.BeginTransaction();
+
+            foreach (DataRow dataRow in dataSet.Tables[0].Rows)
+            {
+                numeroFila++;
+                if (!AsignarValores(context, dataRow, numeroFila, archivo, new Models.Persona()))
+                {
+                    ProgressBarArchivo.Visible = false;
+                    Cursor = Cursors.Default;
+                    return false;
+                }
+                _numeroFilasImportadas++;
+                ProgressBarArchivo.Value++;
+                Application.DoEvents();
+            }
+
+            if (!GuardarDatosEnBase(context, archivo, numeroFila, transaction))
+            { 
+                Cursor = Cursors.Default;
+                return false;
+            }
+
+            Cursor = Cursors.Default;
+            return true;
+        }
+
+
+        private bool AbrirYLeerArchivo(string archivo, out DataSet? dataSet)
+        {
+            LabelEstado.Text = $"Abriendo y leyendo el archivo {archivo}....";
             Application.DoEvents();
             try
             {
-#pragma warning disable S1854 // Unused assignments should be removed
-                errorMessage = "Error al abrir el archivo.";
-#pragma warning restore S1854 // Unused assignments should be removed
                 using FileStream stream = File.Open(Path.Combine(_folder, archivo), FileMode.Open, FileAccess.Read);
                 using IExcelDataReader reader = ExcelReaderFactory.CreateReader(stream);
-                errorMessage = "Error al leer el archivo.";
-                DataSet dataSet = reader.AsDataSet();
-
-                ProgressBarArchivo.Value = 0;
-                ProgressBarArchivo.Maximum = dataSet.Tables[0].Rows.Count;
-                ProgressBarArchivo.Visible = true;
-
-                dataSet.Tables[0].Rows.RemoveAt(0);
-                int numeroFila = 0;
-                LabelEstado.Text = $"Leyendo {ProgressBarArchivo.Maximum:N0} filas desde el archivo {archivo}...";
-                Application.DoEvents();
-                foreach (DataRow row in dataSet.Tables[0].Rows)
+                dataSet = reader.AsDataSet();
+                if (dataSet.Tables.Count == 0 || dataSet.Tables[0].Rows.Count == 0)
                 {
-                    numeroFila++;
-                    if (!AsignarValoresAPersona(row, numeroFila, archivo, new Models.Persona()))
-                    {
-                        ProgressBarArchivo.Visible = false;
-                        Cursor = Cursors.Default;
-                        return false;
-                    }
-                    _numeroFilasImportadas++;
-                    ProgressBarArchivo.Value++;
-                    Application.DoEvents();
+                    MessageBox.Show($"No se han encontrado datos en el archivo '{archivo}'.", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
                 }
-                errorMessage = "Error al guardar los datos en la base de datos.";
-                LabelEstado.Text = $"Guardando {numeroFila:N0} personas en la base de datos...";
-                Application.DoEvents();
-                _context.BulkSaveChanges(new Z.BulkOperations.BulkOperationOptions() { BatchSize = int.Parse(ComboBoxCantidadLote.Text) });
-                LabelEstado.Text = string.Empty;
-                ProgressBarArchivo.Visible = false;
-                Cursor = Cursors.Default;
+                // Borro la primera fila correspondiente a los títulos de las columnas
+                dataSet.Tables[0].Rows.RemoveAt(0);
                 return true;
             }
             catch (Exception ex)
             {
-                LabelEstado.Text = string.Empty;
-                ProgressBarArchivo.Visible = false;
-                MessageBox.Show($"{errorMessage}\nArchivo: {archivo}.\n\nError: {ex.Message}", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Cursor = Cursors.Default;
+                Error.ProcessException(ex, $"Error al abrir y leer el archivo '{archivo}'.");
+                dataSet = null;
                 return false;
             }
         }
 
-        private bool AsignarValoresAPersona(DataRow row, int numeroFila, string archivo, Models.Persona persona)
+        private bool CargarTablas(Models.CSPadronContext context)
         {
-            string errorMessageField = string.Empty;
-            string value;
-            byte idDocumentoTipo;
-            byte idNacionalidadTipo = 0;
-
             try
             {
-
-                // Código de sección
-#pragma warning disable S1854 // Unused assignments should be removed
-                errorMessageField = "Código de sección";
-                value = row[ColumnaCodigoSeccion].ToString();
-                if (byte.TryParse(value, out byte idSeccion) && idSeccion != _idSeccion)
+                _documentoTipos = context.DocumentoTipo;
+                _nacionalidadTipos = context.NacionalidadTipo;
+                if (context.Persona.Any())
                 {
-                    Models.Seccion seccion = _context.Seccion.Find(_idDistrito, idSeccion);
-                    if (seccion is null)
-                    {
-                        value = row[ColumnaSeccion].ToString();
-                        value = value[(value.IndexOf(CodigoSeparador) + CodigoSeparador.Length)..];
-                        _context.Seccion.Add(new()
-                        {
-                            IdDistrito = _idDistrito,
-                            IdSeccion = idSeccion,
-                            Nombre = value.ToTitleCaseAll()
-                        });
-                        _context.SaveChanges();
-                    }
-                    _idSeccion = idSeccion;
-                }
-
-                // Código de circuito
-                errorMessageField = "Código de circuito";
-                value = row[ColumnaCodigoCircuito].ToString();
-                if (value != _circuitoCodigo) 
-                {
-                    Models.Circuito circuito = _context.Circuito.FirstOrDefault(c => c.IdDistrito == _idDistrito && c.IdSeccion == _idSeccion && c.Codigo == value);
-                    if (circuito is null)
-                    {
-                        string? circuitoCodigoLetra;
-                        if (value.IsDigitsOnly())
-                        {
-                            circuitoCodigoLetra = null;
-                        }
-                        else
-                        {
-                            circuitoCodigoLetra = value[^1..];
-                            value = value[..^1];
-                        }
-                        if (!short.TryParse(value, out short circuitoCodigoNumero))
-                        {
-                            MessageBox.Show($"No se pudo obtener el componente numérico del Código de Circuito de la fila número {numeroFila:N0}.", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            Cursor = Cursors.Default;
-                            return false;
-                        }
-                        if (_context.Circuito.Any())
-                        {
-                            _idCircuito = (short)(_context.Circuito.Max(c => c.IdCircuito) + 1);
-                        }
-                        else
-                        {
-                            _idCircuito = 1;
-                        }
-                        value = row[ColumnaCircuito].ToString();
-                        value = value[(value.IndexOf(CodigoSeparador) + CodigoSeparador.Length)..];
-                        _context.Circuito.Add(new()
-                        {
-                            IdCircuito = _idCircuito,
-                            IdDistrito = _idDistrito,
-                            IdSeccion = _idSeccion,
-                            CodigoNumero = circuitoCodigoNumero,
-                            CodigoLetra = circuitoCodigoLetra,
-                            Nombre = value.ToTitleCaseAll()
-                        });
-                        _context.SaveChanges();
-                    }
-                    else
-                    {
-                        _idCircuito = circuito.IdCircuito;
-                        _circuitoCodigo = circuito.Codigo;
-                    }
-                }
-
-                // Tipo de documento
-                errorMessageField = "Tipo de documento";
-                value = row[ColumnaDocumentoTipo].ToString();
-                if (string.IsNullOrEmpty(value))
-                {
-                    idDocumentoTipo = IdDocumentoTipoNoEspecificado;
+                    _idPersona = context.Persona.Max(p => p.IdPersona) + 1;
                 }
                 else
                 {
-                    Models.DocumentoTipo documentoTipo = _documentoTipos.FirstOrDefault(dt => dt.Sigla == value);
-                    if (documentoTipo is not null)
-                    {
-                        idDocumentoTipo = documentoTipo.IdDocumentoTipo;
-                    }
-                    else
-                    {
-                        if (_context.DocumentoTipo.Any())
-                        {
-                            idDocumentoTipo = (byte)(_context.DocumentoTipo.Max(dt => dt.IdDocumentoTipo) + 1);
-                        }
-                        else
-                        {
-                            idDocumentoTipo = 1;
-                        }
-                        _context.DocumentoTipo.Add(new()
-                        {
-                            IdDocumentoTipo = idDocumentoTipo,
-                            Sigla = value,
-                            Nombre = value
-                        });
-                        _context.SaveChanges();
-                        _documentoTipos = _context.DocumentoTipo;
-                    }
+                    _idPersona = 1;
                 }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Error.ProcessException(ex, "Error al abrir la base de datos y pre-cargar las tablas necesarias.");
+                return false;
+            }
+        }
 
-                // Tipo de nacionalidad
-                errorMessageField = "Tipo de nacionalidad";
-                value = row[ColumnaNacionalidadTipo].ToString();
-                if (!string.IsNullOrEmpty(value))
-                {
-                    Models.NacionalidadTipo nacionalidadTipo = _nacionalidadTipos.FirstOrDefault(nt => nt.Nombre.Equals(value, StringComparison.CurrentCultureIgnoreCase));
-                    if (nacionalidadTipo is not null)
-                    {
-                        idNacionalidadTipo = nacionalidadTipo.IdNacionalidadTipo;
-                    }
-                    else
-                    {
-                        if (MessageBox.Show($"No se eoncontró la nacionalidad '{value}' de la fila número {numeroFila:N0} del archivo '{archivo}'.\n\n¿Desea continuar?", Program.Info.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.No)
-                        {
-                            Cursor = Cursors.Default;
-                            return false;
-                        }
-                        idNacionalidadTipo = (byte)(_context.NacionalidadTipo.Max(nt => nt.IdNacionalidadTipo) + 1);
-                        _context.NacionalidadTipo.Add(new()
-                        {
-                            IdNacionalidadTipo = idNacionalidadTipo,
-                            Nombre = value.ToTitleCaseAll()
-                        });
-                        _context.SaveChanges();
-                        _nacionalidadTipos = _context.NacionalidadTipo;
-                    }
-                }
+        private bool GuardarDatosEnBase(Models.CSPadronContext context, string archivo, int cantidadPersonas, IDbContextTransaction transaction)
+        {
+            LabelEstado.Text = $"Guardando {cantidadPersonas:N0} personas en la base de datos...";
+            Application.DoEvents();
+            try
+            {
+                context.BulkSaveChanges(new Z.BulkOperations.BulkOperationOptions() { BatchSize = int.Parse(ComboBoxCantidadLote.Text) });
+                transaction.Commit();
+                LabelEstado.Text = string.Empty;
+                ProgressBarArchivo.Visible = false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Error.ProcessException(ex, $"Error al guardar los datos en la base. Archivo '{archivo}'.");
+                LabelEstado.Text = string.Empty;
+                ProgressBarArchivo.Visible = false;
+                transaction.Rollback();
+                return false;
+            }
+        }
 
-                // Asigno los datos a la entdiad
+        private bool AsignarValores(Models.CSPadronContext context, DataRow dataRow, int numeroFila, string archivo, Models.Persona persona)
+        {
+            // Sección
+            if (!AsignarValoresDeSeccion(context, dataRow, archivo, numeroFila))
+            {
+                return false;
+            }
+
+            // Circuito
+            if (!AsignarValoresDeCircuito(context, dataRow, archivo, numeroFila))
+            {
+                return false;
+            }
+
+            // Tipo de documento
+            if (!AsignarValoresDeTipoDeDocumento(context, dataRow, archivo, numeroFila, out byte idDocumentoTipo))
+            {
+                return false;
+            }
+
+            // Nacionalidad
+            if (!AsignarValoresDeNacionalidad(context, dataRow, archivo, numeroFila, out byte idNacionalidadTipo))
+            {
+                return false;
+            }
+
+            try
+            {
+                // Asigno los datos a la persona
                 persona.IdPersona = _idPersona;
-                persona.Apellido = row[ColumnaApellido].ToString();
-                persona.Nombre = row[ColumnaNombre].ToString();
+                persona.Apellido = dataRow[ColumnaApellido].ToString();
+                persona.Nombre = dataRow[ColumnaNombre].ToString();
                 persona.IdDocumentoTipo = idDocumentoTipo;
                 errorMessageField = "Número de documento";
-                persona.DocumentoNumero = int.Parse(row[ColumnaDocumentoNumero].ToString());
+                persona.DocumentoNumero = int.Parse(dataRow[ColumnaDocumentoNumero].ToString());
                 errorMessageField = "Fecha de nacimiento";
-#pragma warning restore S1854 // Unused assignments should be removed
-                if (string.IsNullOrEmpty(row[ColumnaFechaNacimiento].ToString()))
+                if (string.IsNullOrEmpty(dataRow[ColumnaFechaNacimiento].ToString()))
                 {
                     persona.FechaNacimiento = null;
                 }
                 else
                 {
-                    persona.FechaNacimiento = DateOnly.FromDateTime(DateTime.ParseExact(row[ColumnaFechaNacimiento].ToString(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None));
+                    persona.FechaNacimiento = DateOnly.FromDateTime(DateTime.ParseExact(dataRow[ColumnaFechaNacimiento].ToString(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None));
                 }
-                persona.Genero = row[ColumnaGenero].ToString();
-                persona.Domicilio = row[ColumnaDomicilio].ToString();
-                persona.Localidad = row[ColumnaLocalidad].ToString();
+                persona.Genero = dataRow[ColumnaGenero].ToString();
+                persona.Domicilio = dataRow[ColumnaDomicilio].ToString();
+                persona.Localidad = dataRow[ColumnaLocalidad].ToString();
                 errorMessageField = "Código postal";
-                if (!string.IsNullOrEmpty(row[ColumnaCodigoPostal].ToString()) && short.TryParse(row[ColumnaCodigoPostal].ToString(), out short codigoPostal))
+                if (!string.IsNullOrEmpty(dataRow[ColumnaCodigoPostal].ToString()) && short.TryParse(dataRow[ColumnaCodigoPostal].ToString(), out short codigoPostal))
                 {
                     persona.CodigoPostal = codigoPostal;
                 }
@@ -386,18 +334,205 @@ namespace CS_Padron_Importador
                 persona.IdNacionalidadTipo = idNacionalidadTipo;
                 persona.IdCircuito = _idCircuito;
 
-                _context.Persona.Add(persona);
+                context.Persona.Add(persona);
                 _idPersona++;
             }
             catch (Exception ex)
             {
-                if (MessageBox.Show($"Error al obtener el valor '{errorMessageField}' de la fila número {numeroFila:N0} del archivo '{archivo}'.\n\nError: {ex.Message}\n\n¿Desea continuar?" + (ex.InnerException is not null ? $"\n{ex.InnerException.Message}" : string.Empty), Program.Info.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.No)
+                if (MessageBox.Show($"Error al obtener el valor '{errorMessageField}' de la fila número {numeroFila:N0} del archivo '{archivo}'.\n\nError: {ex.Message}" + (ex.InnerException is not null ? $"\n\nInner error: {ex.InnerException.Message}" : string.Empty) + "\n\n¿Desea continuar?", Program.Info.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.No)
                 {
                     Cursor = Cursors.Default;
                     return false;
                 }
             }
             return true;
+        }
+
+        private bool AsignarValoresDeSeccion(Models.CSPadronContext context, DataRow dataRow, string archivo, int numeroFila)
+        {
+            try
+            {
+                string codigoSeccion = dataRow[ColumnaCodigoSeccion].ToString();
+                if (byte.TryParse(codigoSeccion, out byte idSeccion) && idSeccion != _idSeccion)
+                {
+                    Models.Seccion seccion = context.Seccion.Find(_idDistrito, idSeccion);
+                    if (seccion is null)
+                    {
+                        string nombre = dataRow[ColumnaSeccion].ToString();
+                        nombre = nombre[(nombre.IndexOf(CodigoSeparador) + CodigoSeparador.Length)..];
+                        context.Seccion.Add(new()
+                        {
+                            IdDistrito = _idDistrito,
+                            IdSeccion = idSeccion,
+                            Nombre = nombre.ToTitleCaseAll()
+                        });
+                    }
+                    _idSeccion = idSeccion;
+                    return true;
+                }
+                else
+                {
+                    MessageBox.Show($"No se pudo convertir el código de sección al valor numérico correspondiente.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Error.ProcessException(ex, $"Error al asignar los valores de la sección.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}");
+                return false;
+            }
+        }
+
+        private bool AsignarValoresDeCircuito(Models.CSPadronContext context, DataRow dataRow, string archivo, int numeroFila)
+        {
+            try
+            {
+                string codigoCircuito = dataRow[ColumnaCodigoCircuito].ToString();
+                if (codigoCircuito != _circuitoCodigo)
+                {
+                    Models.Circuito circuito = context.Circuito.FirstOrDefault(c => c.IdDistrito == _idDistrito && c.IdSeccion == _idSeccion && c.Codigo == codigoCircuito);
+                    if (circuito is null)
+                    {
+                        string? circuitoCodigoLetra;
+                        if (codigoCircuito.IsDigitsOnly())
+                        {
+                            circuitoCodigoLetra = null;
+                        }
+                        else
+                        {
+                            circuitoCodigoLetra = codigoCircuito[^1..];
+                            codigoCircuito = codigoCircuito[..^1];
+                        }
+                        if (short.TryParse(codigoCircuito, out short circuitoCodigoNumero))
+                        {
+                            if (context.Circuito.Any())
+                            {
+                                _idCircuito = (short)(context.Circuito.Max(c => c.IdCircuito) + 1);
+                            }
+                            else
+                            {
+                                _idCircuito = 1;
+                            }
+                            string nombre = dataRow[ColumnaCircuito].ToString();
+                            nombre = nombre[(nombre.IndexOf(CodigoSeparador) + CodigoSeparador.Length)..];
+                            context.Circuito.Add(new()
+                            {
+                                IdCircuito = _idCircuito,
+                                IdDistrito = _idDistrito,
+                                IdSeccion = _idSeccion,
+                                CodigoNumero = circuitoCodigoNumero,
+                                CodigoLetra = circuitoCodigoLetra,
+                                Nombre = nombre.ToTitleCaseAll()
+                            });
+                        }
+                        else
+                        {
+                            MessageBox.Show($"\"No se pudo convertir el código de circuito al valor numérico correspondiente.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        _idCircuito = circuito.IdCircuito;
+                        _circuitoCodigo = circuito.Codigo;
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Error.ProcessException(ex, $"Error al asignar los valores del circuito.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}");
+                return false;
+            }
+        }
+
+        private bool AsignarValoresDeTipoDeDocumento(Models.CSPadronContext context, DataRow dataRow, string archivo, int numeroFila, out byte idDocumentoTipo)
+        {
+            try
+            {
+                string documentoSigla = dataRow[ColumnaDocumentoTipo].ToString();
+                if (string.IsNullOrEmpty(documentoSigla))
+                {
+                    idDocumentoTipo = IdDocumentoTipoNoEspecificado;
+                }
+                else
+                {
+                    Models.DocumentoTipo documentoTipo = _documentoTipos.FirstOrDefault(dt => dt.Sigla == documentoSigla);
+                    if (documentoTipo is not null)
+                    {
+                        idDocumentoTipo = documentoTipo.IdDocumentoTipo;
+                    }
+                    else
+                    {
+                        if (context.DocumentoTipo.Any())
+                        {
+                            idDocumentoTipo = (byte)(context.DocumentoTipo.Max(dt => dt.IdDocumentoTipo) + 1);
+                        }
+                        else
+                        {
+                            idDocumentoTipo = 1;
+                        }
+                        context.DocumentoTipo.Add(new()
+                        {
+                            IdDocumentoTipo = idDocumentoTipo,
+                            Sigla = documentoSigla,
+                            Nombre = documentoSigla
+                        });
+                        _documentoTipos = context.DocumentoTipo;
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Error.ProcessException(ex, $"Error al asignar los valores del tipo de documento.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}");
+                idDocumentoTipo = 0;
+                return false;
+            }
+        }
+
+        private bool AsignarValoresDeNacionalidad(Models.CSPadronContext context, DataRow dataRow, string archivo, int numeroFila, out byte idNacionalidadTipo)
+        {
+            try
+            {
+                string nacionalidadTipoValor = dataRow[ColumnaNacionalidadTipo].ToString();
+                if (string.IsNullOrEmpty(nacionalidadTipoValor))
+                {
+                    MessageBox.Show($"La nacionalidad está vacía.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    idNacionalidadTipo = 0;
+                    return false;
+                }
+                else
+                {
+                    Models.NacionalidadTipo nacionalidadTipo = _nacionalidadTipos.FirstOrDefault(nt => nt.Nombre.Equals(nacionalidadTipoValor, StringComparison.CurrentCultureIgnoreCase));
+                    if (nacionalidadTipo is not null)
+                    {
+                        idNacionalidadTipo = nacionalidadTipo.IdNacionalidadTipo;
+                    }
+                    else
+                    {
+                        if (MessageBox.Show($"No se encontró la nacionalidad '{nacionalidadTipoValor}'\n\nArchivo: {archivo}\nFila: {numeroFila:N0}\n\n¿Desea crearla y continuar?", Program.Info.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.No)
+                        {
+                            idNacionalidadTipo = 0;
+                            return false;
+                        }
+                        idNacionalidadTipo = (byte)(context.NacionalidadTipo.Max(nt => nt.IdNacionalidadTipo) + 1);
+                        context.NacionalidadTipo.Add(new()
+                        {
+                            IdNacionalidadTipo = idNacionalidadTipo,
+                            Nombre = nacionalidadTipoValor.ToTitleCaseAll()
+                        });
+                        _nacionalidadTipos = context.NacionalidadTipo;
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Error.ProcessException(ex, $"Error al asignar los valores de la nacionalidad.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}");
+                idNacionalidadTipo = 0;
+                return false;
+            }
         }
 #pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
