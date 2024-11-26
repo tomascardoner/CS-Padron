@@ -28,6 +28,7 @@ namespace CS_Padron_Importador
         private const byte ColumnaLocalidad = 13;
         private const byte ColumnaCodigoPostal = 14;
         private const byte ColumnaNacionalidadTipo = 15;
+        private const byte ColumnaNacionalidadTipoAlternativa = 16;
 
         const string CodigoSeparador = " - ";
 
@@ -179,6 +180,7 @@ namespace CS_Padron_Importador
 
             // Abrir nueva conexión a la base de datos
             using Models.CSPadronContext context = new();
+            List<Models.Persona> personas = [];
             if (!CargarTablas(context))
             {
                 Cursor = Cursors.Default;
@@ -189,8 +191,9 @@ namespace CS_Padron_Importador
             foreach (DataRow dataRow in dataSet.Tables[0].Rows)
             {
                 numeroFila++;
-                if (!AsignarValores(context, dataRow, numeroFila, archivo, new Models.Persona()))
+                if (!AsignarValores(context, personas, dataRow, numeroFila, archivo))
                 {
+                    transaction.Rollback();
                     ProgressBarArchivo.Visible = false;
                     Cursor = Cursors.Default;
                     return false;
@@ -204,14 +207,12 @@ namespace CS_Padron_Importador
                 }
             }
 
-            if (!GuardarDatosEnBase(context, archivo, numeroFila, transaction))
-            { 
-                Cursor = Cursors.Default;
-                return false;
-            }
-
+            LabelEstado.Text = $"Guardando {cantidadFilas:N0} personas en la base de datos...";
+            bool resultado = GuardarDatosEnBase(context, personas, archivo, transaction);
+            LabelEstado.Text = string.Empty;
+            ProgressBarArchivo.Visible = false;
             Cursor = Cursors.Default;
-            return true;
+            return resultado;
         }
 
 
@@ -246,7 +247,7 @@ namespace CS_Padron_Importador
             try
             {
                 // Circuitos
-                _circuitos = new();
+                _circuitos = [];
                 if (context.Circuito.Any())
                 {
                     _idCircuitoNuevo = (short)(context.Circuito.Max(c => c.IdCircuito) + 1);
@@ -296,29 +297,24 @@ namespace CS_Padron_Importador
             }
         }
 
-        private bool GuardarDatosEnBase(Models.CSPadronContext context, string archivo, int cantidadPersonas, IDbContextTransaction transaction)
+        private static bool GuardarDatosEnBase(Models.CSPadronContext context, List<Models.Persona> personas, string archivo, IDbContextTransaction transaction)
         {
-            LabelEstado.Text = $"Guardando {cantidadPersonas:N0} personas en la base de datos...";
-            Application.DoEvents();
             try
             {
-                context.BulkSaveChanges(new Z.BulkOperations.BulkOperationOptions() { BatchSize = int.Parse(ComboBoxCantidadLote.Text) });
+                context.SaveChanges();
+                context.Persona.BulkInsertOptimized(personas);
                 transaction.Commit();
-                LabelEstado.Text = string.Empty;
-                ProgressBarArchivo.Visible = false;
                 return true;
             }
             catch (Exception ex)
             {
                 Error.ProcessException(ex, $"Error al guardar los datos en la base. Archivo '{archivo}'.");
-                LabelEstado.Text = string.Empty;
-                ProgressBarArchivo.Visible = false;
                 transaction.Rollback();
                 return false;
             }
         }
 
-        private bool AsignarValores(Models.CSPadronContext context, DataRow dataRow, int numeroFila, string archivo, Models.Persona persona)
+        private bool AsignarValores(Models.CSPadronContext context, List<Models.Persona> personas, DataRow dataRow, int numeroFila, string archivo)
         {
             // Sección
             if (!AsignarValoresDeSeccion(context, dataRow, archivo, numeroFila))
@@ -374,19 +370,21 @@ namespace CS_Padron_Importador
             }
 
             // Asigno los datos a la persona
-            persona.IdPersona = _idPersonaNuevo;
-            persona.Apellido = dataRow[ColumnaApellido].ToString();
-            persona.Nombre = dataRow[ColumnaNombre].ToString();
-            persona.IdDocumentoTipo = idDocumentoTipo;
-            persona.DocumentoNumero = documentoNumero;
-            persona.Genero = dataRow[ColumnaGenero].ToString();
-            persona.Domicilio = dataRow[ColumnaDomicilio].ToString();
-            persona.Localidad = dataRow[ColumnaLocalidad].ToString();
-            persona.FechaNacimiento = fechaNacimiento;
-            persona.CodigoPostal = codigoPostal;
-            persona.IdNacionalidadTipo = idNacionalidadTipo;
-            persona.IdCircuito = _idCircuito;
-            context.Persona.Add(persona);
+            personas.Add(new()
+            {
+                IdPersona = _idPersonaNuevo,
+                Apellido = dataRow[ColumnaApellido].ToString(),
+                Nombre = dataRow[ColumnaNombre].ToString(),
+                IdDocumentoTipo = idDocumentoTipo,
+                DocumentoNumero = documentoNumero,
+                Genero = dataRow[ColumnaGenero].ToString(),
+                Domicilio = dataRow[ColumnaDomicilio].ToString(),
+                Localidad = dataRow[ColumnaLocalidad].ToString(),
+                FechaNacimiento = fechaNacimiento,
+                CodigoPostal = codigoPostal,
+                IdNacionalidadTipo = idNacionalidadTipo,
+                IdCircuito = _idCircuito
+            });
             _idPersonaNuevo++;
             return true;
         }
@@ -545,34 +543,42 @@ namespace CS_Padron_Importador
                 string nacionalidadTipoValor = dataRow[ColumnaNacionalidadTipo].ToString();
                 if (string.IsNullOrEmpty(nacionalidadTipoValor))
                 {
-                    MessageBox.Show($"La nacionalidad está vacía.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    idNacionalidadTipo = 0;
-                    return false;
+                    // Intento con la columna siguiente para los casos de las celdas desfasadas
+                    nacionalidadTipoValor = dataRow[ColumnaNacionalidadTipoAlternativa].ToString();
+                    if (string.IsNullOrEmpty(nacionalidadTipoValor))
+                    {
+                        MessageBox.Show($"La nacionalidad está vacía.\n\nArchivo: {archivo}\nFila: {numeroFila:N0}", Program.Info.Title, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        idNacionalidadTipo = 0;
+                        return false;
+                    }
+                }
+
+                if (nacionalidadTipoValor.IsDigitsOnly())
+                {
+                    // Intento con la columna siguiente para los casos de las celdas desfasadas
+                    nacionalidadTipoValor = dataRow[ColumnaNacionalidadTipoAlternativa].ToString();
+                }
+                Models.NacionalidadTipo nacionalidadTipo = _nacionalidadTipos.Find(nt => nt.Nombre.Equals(nacionalidadTipoValor, StringComparison.CurrentCultureIgnoreCase));
+                if (nacionalidadTipo is not null)
+                {
+                    idNacionalidadTipo = nacionalidadTipo.IdNacionalidadTipo;
                 }
                 else
                 {
-                    Models.NacionalidadTipo nacionalidadTipo = _nacionalidadTipos.Find(nt => nt.Nombre.Equals(nacionalidadTipoValor, StringComparison.CurrentCultureIgnoreCase));
-                    if (nacionalidadTipo is not null)
+                    if (MessageBox.Show($"No se encontró la nacionalidad '{nacionalidadTipoValor}'\n\nArchivo: {archivo}\nFila: {numeroFila:N0}\n\n¿Desea crearla y continuar?", Program.Info.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     {
-                        idNacionalidadTipo = nacionalidadTipo.IdNacionalidadTipo;
+                        idNacionalidadTipo = 0;
+                        return false;
                     }
-                    else
+                    idNacionalidadTipo = _idNacionalidadTipoNuevo;
+                    nacionalidadTipo = new()
                     {
-                        if (MessageBox.Show($"No se encontró la nacionalidad '{nacionalidadTipoValor}'\n\nArchivo: {archivo}\nFila: {numeroFila:N0}\n\n¿Desea crearla y continuar?", Program.Info.Title, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                        {
-                            idNacionalidadTipo = 0;
-                            return false;
-                        }
-                        idNacionalidadTipo = _idNacionalidadTipoNuevo;
-                        nacionalidadTipo = new()
-                        {
-                            IdNacionalidadTipo = idNacionalidadTipo,
-                            Nombre = nacionalidadTipoValor.ToTitleCaseAll()
-                        };
-                        context.NacionalidadTipo.Add(nacionalidadTipo);
-                        _nacionalidadTipos.Add(nacionalidadTipo);
-                        _idNacionalidadTipoNuevo++;
-                    }
+                        IdNacionalidadTipo = idNacionalidadTipo,
+                        Nombre = nacionalidadTipoValor.ToTitleCaseAll()
+                    };
+                    context.NacionalidadTipo.Add(nacionalidadTipo);
+                    _nacionalidadTipos.Add(nacionalidadTipo);
+                    _idNacionalidadTipoNuevo++;
                 }
                 return true;
             }
