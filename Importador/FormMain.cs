@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore.Storage;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
+using System.Collections.ObjectModel;
 
 namespace CS_Padron_Importador
 {
@@ -134,7 +137,11 @@ namespace CS_Padron_Importador
             _numeroFilasImportadas = 0;
             Stopwatch stopWatch = new();
             stopWatch.Start();
-            CheckedListBox.CheckedItemCollection checkedItems = CheckedListBoxArchivos.CheckedItems;
+            Collection<string> checkedItems = [];
+            for (int i = 0; i < CheckedListBoxArchivos.CheckedItems.Count; i++)
+            {
+                checkedItems.Add(CheckedListBoxArchivos.CheckedItems[i].ToString());
+            }
             for (int i = 0; i < checkedItems.Count; i++)
             {
                 if (!ImportarArchivo(checkedItems[i].ToString()))
