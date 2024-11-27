@@ -56,8 +56,6 @@ namespace CS_Padron_Importador
         {
             InitializeComponent();
             Models.CSPadronContext.ConnectionString = $"Server={Properties.Settings.Default.DatabaseServer};Database={Properties.Settings.Default.DatabaseDatabase};Trusted_Connection=False;User Id={Properties.Settings.Default.DatabaseUserId};Password={Properties.Settings.Default.DatabasePassword};TrustServerCertificate=True";
-            ComboBoxCantidadLote.Items.AddRange([1, 10, 50, 100, 500, 1000, 5000]);
-            ComboBoxCantidadLote.SelectedIndex = 5;
         }
 
         #region Files to import
@@ -208,6 +206,7 @@ namespace CS_Padron_Importador
             }
 
             LabelEstado.Text = $"Guardando {cantidadFilas:N0} personas en la base de datos...";
+            Application.DoEvents();
             bool resultado = GuardarDatosEnBase(context, personas, archivo, transaction);
             LabelEstado.Text = string.Empty;
             ProgressBarArchivo.Visible = false;
@@ -297,12 +296,25 @@ namespace CS_Padron_Importador
             }
         }
 
-        private static bool GuardarDatosEnBase(Models.CSPadronContext context, List<Models.Persona> personas, string archivo, IDbContextTransaction transaction)
+        private bool GuardarDatosEnBase(Models.CSPadronContext context, List<Models.Persona> personas, string archivo, IDbContextTransaction transaction)
         {
             try
             {
-                context.SaveChanges();
-                context.Persona.BulkInsertOptimized(personas);
+                if (RadioButtonOptimizacionMaxima.Checked)
+                {
+                    context.SaveChanges();
+                    context.Persona.BulkInsertOptimized(personas);
+                }
+                else if (RadioButtonOptimizacionIntermedia.Checked)
+                {
+                    context.Persona.AddRange(personas);
+                    context.BulkSaveChanges();
+                }
+                else
+                {
+                    context.Persona.AddRange(personas);
+                    context.SaveChanges();
+                }
                 transaction.Commit();
                 return true;
             }

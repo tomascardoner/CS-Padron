@@ -39,8 +39,10 @@
             ButtonSeleccionarTodos = new Button();
             ButtonSeleccionarNinguno = new Button();
             TableLayoutPanelIniciar = new TableLayoutPanel();
-            LabelCantidadLote = new Label();
-            ComboBoxCantidadLote = new ComboBox();
+            LabelOptimizacion = new Label();
+            RadioButtonOptimizacionMaxima = new RadioButton();
+            RadioButtonOptimizacionIntermedia = new RadioButton();
+            RadioButtonOptimizacionNinguna = new RadioButton();
             ButtonIniciar = new Button();
             ProgressBarArchivo = new ProgressBar();
             LabelEstado = new Label();
@@ -206,13 +208,17 @@
             // 
             TableLayoutPanelIniciar.AutoSize = true;
             TableLayoutPanelIniciar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            TableLayoutPanelIniciar.ColumnCount = 3;
+            TableLayoutPanelIniciar.ColumnCount = 5;
+            TableLayoutPanelIniciar.ColumnStyles.Add(new ColumnStyle());
+            TableLayoutPanelIniciar.ColumnStyles.Add(new ColumnStyle());
             TableLayoutPanelIniciar.ColumnStyles.Add(new ColumnStyle());
             TableLayoutPanelIniciar.ColumnStyles.Add(new ColumnStyle());
             TableLayoutPanelIniciar.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TableLayoutPanelIniciar.Controls.Add(LabelCantidadLote, 0, 0);
-            TableLayoutPanelIniciar.Controls.Add(ComboBoxCantidadLote, 1, 0);
-            TableLayoutPanelIniciar.Controls.Add(ButtonIniciar, 2, 0);
+            TableLayoutPanelIniciar.Controls.Add(LabelOptimizacion, 0, 0);
+            TableLayoutPanelIniciar.Controls.Add(RadioButtonOptimizacionMaxima, 1, 0);
+            TableLayoutPanelIniciar.Controls.Add(RadioButtonOptimizacionIntermedia, 2, 0);
+            TableLayoutPanelIniciar.Controls.Add(RadioButtonOptimizacionNinguna, 3, 0);
+            TableLayoutPanelIniciar.Controls.Add(ButtonIniciar, 4, 0);
             TableLayoutPanelIniciar.Dock = DockStyle.Fill;
             TableLayoutPanelIniciar.GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
             TableLayoutPanelIniciar.Location = new Point(3, 382);
@@ -222,36 +228,62 @@
             TableLayoutPanelIniciar.Size = new Size(999, 36);
             TableLayoutPanelIniciar.TabIndex = 1;
             // 
-            // LabelCantidadLote
+            // LabelOptimizacion
             // 
-            LabelCantidadLote.AutoSize = true;
-            LabelCantidadLote.Dock = DockStyle.Fill;
-            LabelCantidadLote.Location = new Point(3, 0);
-            LabelCantidadLote.Name = "LabelCantidadLote";
-            LabelCantidadLote.Size = new Size(129, 36);
-            LabelCantidadLote.TabIndex = 0;
-            LabelCantidadLote.Text = "Cantidad por lote:";
-            LabelCantidadLote.TextAlign = ContentAlignment.MiddleLeft;
+            LabelOptimizacion.AutoSize = true;
+            LabelOptimizacion.Dock = DockStyle.Fill;
+            LabelOptimizacion.Location = new Point(3, 0);
+            LabelOptimizacion.Name = "LabelOptimizacion";
+            LabelOptimizacion.Size = new Size(101, 36);
+            LabelOptimizacion.TabIndex = 7;
+            LabelOptimizacion.Text = "Optimización:";
+            LabelOptimizacion.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // ComboBoxCantidadLote
+            // RadioButtonOptimizacionMaxima
             // 
-            ComboBoxCantidadLote.Dock = DockStyle.Fill;
-            ComboBoxCantidadLote.DropDownStyle = ComboBoxStyle.DropDownList;
-            ComboBoxCantidadLote.FormattingEnabled = true;
-            ComboBoxCantidadLote.Location = new Point(138, 4);
-            ComboBoxCantidadLote.Margin = new Padding(3, 4, 3, 3);
-            ComboBoxCantidadLote.Name = "ComboBoxCantidadLote";
-            ComboBoxCantidadLote.Size = new Size(105, 28);
-            ComboBoxCantidadLote.TabIndex = 1;
+            RadioButtonOptimizacionMaxima.AutoSize = true;
+            RadioButtonOptimizacionMaxima.Checked = true;
+            RadioButtonOptimizacionMaxima.Dock = DockStyle.Fill;
+            RadioButtonOptimizacionMaxima.Location = new Point(110, 3);
+            RadioButtonOptimizacionMaxima.Name = "RadioButtonOptimizacionMaxima";
+            RadioButtonOptimizacionMaxima.Size = new Size(231, 30);
+            RadioButtonOptimizacionMaxima.TabIndex = 4;
+            RadioButtonOptimizacionMaxima.TabStop = true;
+            RadioButtonOptimizacionMaxima.Text = "Máxima (BulkInsertOptimized)";
+            RadioButtonOptimizacionMaxima.UseVisualStyleBackColor = true;
+            // 
+            // RadioButtonOptimizacionIntermedia
+            // 
+            RadioButtonOptimizacionIntermedia.AutoSize = true;
+            RadioButtonOptimizacionIntermedia.Dock = DockStyle.Fill;
+            RadioButtonOptimizacionIntermedia.Location = new Point(347, 3);
+            RadioButtonOptimizacionIntermedia.Name = "RadioButtonOptimizacionIntermedia";
+            RadioButtonOptimizacionIntermedia.Size = new Size(231, 30);
+            RadioButtonOptimizacionIntermedia.TabIndex = 5;
+            RadioButtonOptimizacionIntermedia.TabStop = true;
+            RadioButtonOptimizacionIntermedia.Text = "Intermedia (BulkSaveChanges)";
+            RadioButtonOptimizacionIntermedia.UseVisualStyleBackColor = true;
+            // 
+            // RadioButtonOptimizacionNinguna
+            // 
+            RadioButtonOptimizacionNinguna.AutoSize = true;
+            RadioButtonOptimizacionNinguna.Dock = DockStyle.Fill;
+            RadioButtonOptimizacionNinguna.Location = new Point(584, 3);
+            RadioButtonOptimizacionNinguna.Name = "RadioButtonOptimizacionNinguna";
+            RadioButtonOptimizacionNinguna.Size = new Size(86, 30);
+            RadioButtonOptimizacionNinguna.TabIndex = 6;
+            RadioButtonOptimizacionNinguna.TabStop = true;
+            RadioButtonOptimizacionNinguna.Text = "Ninguna";
+            RadioButtonOptimizacionNinguna.UseVisualStyleBackColor = true;
             // 
             // ButtonIniciar
             // 
             ButtonIniciar.AutoSize = true;
             ButtonIniciar.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             ButtonIniciar.Dock = DockStyle.Fill;
-            ButtonIniciar.Location = new Point(249, 3);
+            ButtonIniciar.Location = new Point(676, 3);
             ButtonIniciar.Name = "ButtonIniciar";
-            ButtonIniciar.Size = new Size(747, 30);
+            ButtonIniciar.Size = new Size(320, 30);
             ButtonIniciar.TabIndex = 3;
             ButtonIniciar.Text = "Iniciar importación";
             ButtonIniciar.UseVisualStyleBackColor = true;
@@ -314,7 +346,9 @@
         private ProgressBar ProgressBarArchivo;
         private Label LabelEstado;
         private TableLayoutPanel TableLayoutPanelIniciar;
-        private Label LabelCantidadLote;
-        private ComboBox ComboBoxCantidadLote;
+        private RadioButton RadioButtonOptimizacionMaxima;
+        private RadioButton RadioButtonOptimizacionIntermedia;
+        private RadioButton RadioButtonOptimizacionNinguna;
+        private Label LabelOptimizacion;
     }
 }
